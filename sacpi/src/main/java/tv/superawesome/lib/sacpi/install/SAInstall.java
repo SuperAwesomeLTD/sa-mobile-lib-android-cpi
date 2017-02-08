@@ -51,7 +51,11 @@ public class SAInstall {
      *                - https://ads.staging.superawesome.tv/v2/install
      */
     public String getInstallUrl (SASession session) {
-        return session.getBaseUrl() + "/install";
+        try {
+            return session.getBaseUrl() + "/install";
+        } catch (Exception e) {
+            return null ;
+        }
     }
 
     /**
@@ -132,7 +136,7 @@ public class SAInstall {
         // get the associated url query
         JSONObject query = getInstallQuery(targetPackageName, sourcePackageName);
 
-        // get the install hader
+        // get the install header
         JSONObject header = getInstallHeader();
 
         // send the GET request and await a result

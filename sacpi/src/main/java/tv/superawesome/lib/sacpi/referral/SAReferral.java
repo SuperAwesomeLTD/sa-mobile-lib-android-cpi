@@ -20,7 +20,7 @@ import tv.superawesome.lib.sautils.SAUtils;
  */
 public class SAReferral {
 
-    // currnt context
+    // current context
     private Context context;
 
     /**
@@ -69,17 +69,39 @@ public class SAReferral {
      */
     public JSONObject getReferralCustomData (SAReferralData data) {
 
-        return SAJsonParser.newObject(new Object[]{
-                // "sdkVersion", SuperAwesome.getInstance().getSDKVersion(),
-                "rnd", SAUtils.getCacheBuster(),
-                "ct", SAUtils.getNetworkConnectivity(context).ordinal(),
-                "data", SAUtils.encodeDictAsJsonDict(SAJsonParser.newObject(new Object[]{
-                        "placement", data.placementId,
-                        "line_item", data.lineItemId,
-                        "creative", data.creativeId,
-                        "type", "custom.referred_install"
-                }))
-        });
+        try {
+            return SAJsonParser.newObject(new Object[]{
+                    // "sdkVersion", SuperAwesome.getInstance().getSDKVersion(),
+                    "rnd", SAUtils.getCacheBuster(),
+                    "ct", SAUtils.getNetworkConnectivity(context).ordinal(),
+                    "data", SAUtils.encodeDictAsJsonDict(SAJsonParser.newObject(new Object[]{
+                    "placement", data.placementId,
+                    "line_item", data.lineItemId,
+                    "creative", data.creativeId,
+                    "type", "custom.referred_install"
+            }))
+            });
+        } catch (Exception e) {
+            return new JSONObject();
+        }
+    }
+
+    /**
+     * Method that forms a new session and then sets it either to production or staging based
+     * on the referral data configuration
+     *
+     * @param data  an instance of SAReferralData
+     * @return      a new configured session instance
+     */
+    public SASession getReferralInstallSession (SAReferralData data) {
+        SASession session = new SASession(context);
+        try {
+            SAConfiguration configuration = SAConfiguration.fromValue(data.configuration);
+            session.setConfiguration(configuration);
+            return session;
+        } catch (Exception e) {
+            return session;
+        }
     }
 
     /**
@@ -90,10 +112,7 @@ public class SAReferral {
      */
     public String getReferralUrl (SAReferralData data) {
 
-        SASession session = new SASession(context);
-        SAConfiguration configuration = SAConfiguration.fromValue(data.configuration);
-        session.setConfiguration(configuration);
-
+        SASession session = getReferralInstallSession(data);
         JSONObject refEventDict = getReferralCustomData(data);
 
         return session.getBaseUrl() + "/event?" + SAUtils.formGetQueryFromDict(refEventDict);

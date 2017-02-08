@@ -25,7 +25,11 @@ public class SAOnce {
      * @param context current context (activity or fragment)
      */
     public SAOnce (Context context) {
-        preferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        try {
+            preferences = context.getSharedPreferences(FILE_NAME, Context.MODE_PRIVATE);
+        } catch (Exception ignored) {
+            // do nothing
+        }
     }
 
     /**
@@ -34,22 +38,40 @@ public class SAOnce {
      * @return true if present, false otherwise
      */
     public boolean isCPISent () {
-        return preferences.contains(KEY);
+        try {
+            return preferences.contains(KEY);
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
      * Method that sets the CPI install event as being sent by putting "true" under the
      * local preferences KEY key.
+
+     * @return true if operation OK, false otherwise
      */
-    public void setCPISent () {
-        preferences.edit().putBoolean(KEY, true).apply();
+    public boolean setCPISent () {
+        try {
+            preferences.edit().putBoolean(KEY, true).apply();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 
     /**
      * Aux method (used mostly for testing) that resets the CPI sent KEY in the shared
      * preferences.
+     *
+     * @return true if operation OK, false otherwise
      */
-    public void resetCPISent () {
-        preferences.edit().remove(KEY).apply();
+    public boolean resetCPISent () {
+        try {
+            preferences.edit().remove(KEY).apply();
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

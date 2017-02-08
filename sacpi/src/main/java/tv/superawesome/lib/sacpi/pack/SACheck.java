@@ -54,7 +54,11 @@ public class SACheck {
      *                  - https://ads.staging.superawesome.tv/v2/checkinstall
      */
     public String getCheckInstallUrl (SASession session) {
-        return session.getBaseUrl() + "/checkinstall";
+        try {
+            return session.getBaseUrl() + "/checkinstall";
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**

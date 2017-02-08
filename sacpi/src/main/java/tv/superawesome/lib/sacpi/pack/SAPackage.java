@@ -38,11 +38,16 @@ public class SAPackage {
      */
     public String findFirstPackageOnDeviceFrom (List<String> potentialPackages) {
 
-        // go through all the potential packages in the JSONArray and find the first one
-        for (String packageName : potentialPackages) {
-            if (isPackageOnDevice(packageName)) {
-                return packageName;
+        try {
+            // go through all the potential packages in the JSONArray and find the first one
+            for (String packageName : potentialPackages) {
+                if (isPackageOnDevice(packageName)) {
+                    return packageName;
+                }
             }
+        }
+        catch (Exception e) {
+            return null;
         }
 
         return null;
@@ -55,11 +60,15 @@ public class SAPackage {
      * @return              true or false
      */
     public boolean isPackageOnDevice (String packageName) {
-        // in case of null context, just return false
-        if (context == null) return false;
 
         // get the package manager
-        PackageManager packageManager = context.getPackageManager();
+        PackageManager packageManager;
+
+        try {
+            packageManager = context.getPackageManager();
+        } catch (Exception e) {
+            return false;
+        }
 
         // try getting package info
         try {
