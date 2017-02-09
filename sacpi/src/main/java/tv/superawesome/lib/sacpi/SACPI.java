@@ -7,6 +7,7 @@ package tv.superawesome.lib.sacpi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -19,6 +20,7 @@ import tv.superawesome.lib.sacpi.pack.SAPackage;
 import tv.superawesome.lib.sacpi.referral.SAReferral;
 import tv.superawesome.lib.samodelspace.SAReferralData;
 import tv.superawesome.lib.sanetwork.request.SANetwork;
+import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SASession;
 
 /**
@@ -145,17 +147,6 @@ public class SACPI extends BroadcastReceiver {
     public void onReceive(Context context, Intent intent) {
 
         SAReferral referral = new SAReferral(context);
-        String referrerString = intent.getStringExtra("referrer");
-        SAReferralData referralData = referral.parseReferralResponse(referrerString);
-
-        if (referralData.isValid()) {
-
-            JSONObject header = referral.getReferralHeader();
-            String eventUrl = referral.getReferralUrl(referralData);
-
-            SANetwork network = new SANetwork();
-            network.sendGET(context, eventUrl, new JSONObject(), header, null);
-
-        }
+        referral.sendReferralEvent(intent, null);
     }
 }

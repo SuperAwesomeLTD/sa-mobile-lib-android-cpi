@@ -5,11 +5,14 @@
 package tv.superawesome.lib.sacpi.referral;
 
 import android.content.Context;
+import android.content.Intent;
 
 import org.json.JSONObject;
 
 import tv.superawesome.lib.sajsonparser.SAJsonParser;
 import tv.superawesome.lib.samodelspace.SAReferralData;
+import tv.superawesome.lib.sanetwork.request.SANetwork;
+import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SAConfiguration;
 import tv.superawesome.lib.sasession.SASession;
 import tv.superawesome.lib.sautils.SAUtils;
@@ -21,7 +24,8 @@ import tv.superawesome.lib.sautils.SAUtils;
 public class SAReferral {
 
     // current context
-    private Context context;
+    private Context     context;
+    private SANetwork   network;
 
     /**
      * Normal constructor with context
@@ -29,7 +33,34 @@ public class SAReferral {
      * @param context current context (activity or fragment)
      */
     public SAReferral (Context context) {
+        // get the context reference
         this.context = context;
+
+        // create the SANetwork object
+        network = new SANetwork();
+    }
+
+    /**
+     * Method that takes an intent (that should be sent by the Android Broadcast service)
+     * and find out if it has an associated "referrer" string extra.
+     * If it does, it's going to parse the referral response;
+     *
+     * @param intent current intent
+     * @return       valid referral data
+     */
+    public SAReferralData parseReferralResponse (Intent intent) {
+
+        String referralString = null;
+
+        // guard against an invalid intent
+        try {
+            referralString = intent.getStringExtra("referrer");
+        } catch (Exception ignored) {
+            // do nothing
+        }
+
+        return parseReferralResponse(referralString);
+
     }
 
     /**
@@ -128,5 +159,58 @@ public class SAReferral {
                 "Content-Type", "application/json",
                 "User-Agent", SAUtils.getUserAgent(context)
         });
+    }
+
+    /**
+     * Main method of the class. This sends an event to the ad server based on referral data
+     * sent by the Android Broadcast service through an Intent
+     *
+     * @param intent    Android Broadcast Service intent containing a "referrer" string
+     * @param listener  Listener for a callback
+     */
+    public void sendReferralEvent (Intent intent, final SAReferralInterface listener) {
+
+        // get the referral data from the intent
+        SAReferralData referralData = parseReferralResponse(intent);
+
+        // if it's valid
+        if (referralData.isValid()) {
+
+            // get the url
+            String url = getReferralUrl(referralData);
+            // get the header
+            JSONObject header = getReferralHeader();
+
+            // send the network request
+            network.sendGET(context, url, new JSONObject(), header, new SANetworkInterface() {
+                @Override
+                public void saDidGetResponse(int status, String payload, boolean success) {
+                    if (listener != null) {
+                        listener.saDidSendReferralData(success);
+                    }
+                }
+            });
+
+        }
+        // else callback with false
+        else {
+            if (listener != null) {
+                listener.saDidSendReferralData(false);
+            }
+        }
+
+    }
+
+    /**
+     * Interface for the referral system
+     */
+    public interface SAReferralInterface {
+
+        /**
+         * Method to implement
+         *
+         * @param success callback param to tell if the op was successful or not
+         */
+        void saDidSendReferralData (boolean success);
     }
 }

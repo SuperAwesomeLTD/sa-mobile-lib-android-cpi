@@ -1,6 +1,7 @@
 package tv.superawesome.sacpidemo;
 
 import android.app.Application;
+import android.content.Intent;
 import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 import android.util.Log;
@@ -108,8 +109,65 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
         SAReferral referral = new SAReferral(getContext());
         assertNotNull(referral);
 
-        String source = null;
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferralData result = referral.parseReferralResponse((String)null);
+
+        assertNotNull(result);
+        assertEquals(-1, result.configuration);
+        assertEquals(-1, result.campaignId);
+        assertEquals(-1, result.lineItemId);
+        assertEquals(-1, result.creativeId);
+        assertEquals(-1, result.placementId);
+        assertFalse(result.isValid());
+
+    }
+
+    @SmallTest
+    public void testSAReferral_parseReferralResponse1_6 () {
+
+        SAReferral referral = new SAReferral(getContext());
+        assertNotNull(referral);
+
+        Intent intent = new Intent();
+        intent.putExtra("referrer", "utm_source=1&utm_campaign=231&utm_term=2091&utm_content=21&utm_medium=8921");
+
+        SAReferralData result = referral.parseReferralResponse(intent);
+
+        assertNotNull(result);
+        assertEquals(1, result.configuration);
+        assertEquals(231, result.campaignId);
+        assertEquals(2091, result.lineItemId);
+        assertEquals(21, result.creativeId);
+        assertEquals(8921, result.placementId);
+        assertTrue(result.isValid());
+
+    }
+
+    @SmallTest
+    public void testSAReferral_parseReferralResponse1_7 () {
+
+        SAReferral referral = new SAReferral(getContext());
+        assertNotNull(referral);
+
+        Intent intent = new Intent();
+        SAReferralData result = referral.parseReferralResponse(intent);
+
+        assertNotNull(result);
+        assertEquals(-1, result.configuration);
+        assertEquals(-1, result.campaignId);
+        assertEquals(-1, result.lineItemId);
+        assertEquals(-1, result.creativeId);
+        assertEquals(-1, result.placementId);
+        assertFalse(result.isValid());
+
+    }
+
+    @SmallTest
+    public void testSAReferral_parseReferralResponse1_8 () {
+
+        SAReferral referral = new SAReferral(getContext());
+        assertNotNull(referral);
+
+        SAReferralData result = referral.parseReferralResponse((Intent)null);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
