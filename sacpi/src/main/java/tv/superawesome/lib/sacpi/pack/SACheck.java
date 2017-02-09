@@ -82,7 +82,7 @@ public class SACheck {
      * array of package names as string, into a list of strings;
      *
      * @param serverResponse a JSON array as string; something like this:
-     *                       " [ "one.potential.app", "another.potential.app" ] "
+     *                       " [ \"one.potential.app\", \"another.potential.app\" ] "
      * @return               a list of strings, like this:
      *                       ["one.potential.app", "another.potential.app"]
      */

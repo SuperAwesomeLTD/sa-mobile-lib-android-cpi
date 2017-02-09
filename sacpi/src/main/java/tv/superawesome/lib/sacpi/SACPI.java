@@ -63,11 +63,7 @@ public class SACPI extends BroadcastReceiver {
     public void sendInstallEvent (final Context context, final SACPIInterface listener) {
         SASession session = new SASession(context);
         session.setConfigurationProduction();
-
-        SACPIInterface _listener = listener != null ? listener : new SACPIInterface() {
-            @Override public void saDidCountAnInstall(boolean success) {}};
-
-        sendInstallEvent(context, session, _listener);
+        sendInstallEvent(context, session, listener);
     }
 
     /**
@@ -80,7 +76,25 @@ public class SACPI extends BroadcastReceiver {
      * @param session   current session to be based on
      * @param listener  return callback listener
      */
-    private void sendInstallEvent (final Context context, final SASession session, final SACPIInterface listener) {
+    public void sendInstallEvent (final Context context, final SASession session, final SACPIInterface listener) {
+        sendInstallEvent(context, session, session.getAppName(), listener);
+    }
+
+    /**
+     * Main class method that handles all the aspects of properly sending an /install event
+     * - verifying first that I can find a possible "installer" app on the user's device
+     * - whatever the answer, send an /install event, with an additional "sourceBundle" parameter
+     * attached.
+     *
+     * @param context   current context (fragment or activity)
+     * @param session   current session to be based on
+     * @param target    the target you want to check & send an install for
+     * @param listener  return callback listener
+     */
+    public void sendInstallEvent (final Context context, final SASession session, final String target, final SACPIInterface listener) {
+
+        final SACPIInterface _listener = listener != null ? listener : new SACPIInterface() {
+            @Override public void saDidCountAnInstall(boolean success) {}};
 
         // create the objects I'll need for this method
         final SAOnce    once    = new SAOnce (context);
@@ -93,9 +107,6 @@ public class SACPI extends BroadcastReceiver {
 
         // if not, go ahead
         if (!isSent) {
-
-            // get this app's package name
-            final String target = session.getPackageName();
 
             // find out if the AwesomeAds server thinks there are a number of potential
             // apps (package names) that might've generated the install from this
@@ -114,7 +125,7 @@ public class SACPI extends BroadcastReceiver {
                         @Override
                         public void saDidCountAnInstall(boolean success) {
                             once.setCPISent();
-                            listener.saDidCountAnInstall(success);
+                            _listener.saDidCountAnInstall(success);
                         }
                     });
 
