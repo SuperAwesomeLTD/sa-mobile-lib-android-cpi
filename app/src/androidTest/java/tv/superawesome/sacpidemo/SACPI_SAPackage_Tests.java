@@ -5,6 +5,7 @@ import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import tv.superawesome.lib.sacpi.pack.SAPackage;
 
@@ -59,7 +60,7 @@ public class SACPI_SAPackage_Tests extends ApplicationTestCase<Application> {
         SAPackage pack = new SAPackage(getContext());
         assertNotNull(pack);
 
-        String expected = "tv.superawesome.sacpidemo";
+        String expected = "com.android.gesture.builder";
 
         String found = pack.findFirstPackageOnDeviceFrom(Arrays.asList("tv.superawesome.sacpidemo", "com.android.gesture.builder"));
 
@@ -87,9 +88,9 @@ public class SACPI_SAPackage_Tests extends ApplicationTestCase<Application> {
         SAPackage pack = new SAPackage(getContext());
         assertNotNull(pack);
 
-        String expected = "tv.superawesome.sacpidemo";
+        String expected = "com.android.gesture.builder";
 
-        String found = pack.findFirstPackageOnDeviceFrom(Arrays.asList("com.example.someapp", "tv.superawesome.sacpidemo"));
+        String found = pack.findFirstPackageOnDeviceFrom(Arrays.asList("com.example.someapp", "com.android.gesture.builder"));
 
         assertEquals(expected, found);
 
@@ -101,13 +102,26 @@ public class SACPI_SAPackage_Tests extends ApplicationTestCase<Application> {
         SAPackage pack = new SAPackage(getContext());
         assertNotNull(pack);
 
-        String found = pack.findFirstPackageOnDeviceFrom(Arrays.asList("com.example.someapp", "com.example.someapp2"));
+
+        String found = pack.findFirstPackageOnDeviceFrom(Collections.singletonList("tv.superawesome.sacpidemo"));
+
         assertNull(found);
 
     }
 
     @SmallTest
     public void testSAPackage_findFirstPackageOnDeviceFrom1_5 () {
+
+        SAPackage pack = new SAPackage(getContext());
+        assertNotNull(pack);
+
+        String found = pack.findFirstPackageOnDeviceFrom(Arrays.asList("com.example.someapp", "com.example.someapp2"));
+        assertNull(found);
+
+    }
+
+    @SmallTest
+    public void testSAPackage_findFirstPackageOnDeviceFrom1_6 () {
 
         SAPackage pack = new SAPackage(getContext());
         assertNotNull(pack);

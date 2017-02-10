@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 
 import java.util.List;
 
+import tv.superawesome.lib.sautils.SAUtils;
+
 /**
  * This class holds methods that:
  * - check if a package is located on a device
@@ -38,10 +40,18 @@ public class SAPackage {
      */
     public String findFirstPackageOnDeviceFrom (List<String> potentialPackages) {
 
+        String selfPackageName = null;
         try {
-            // go through all the potential packages in the JSONArray and find the first one
+            selfPackageName = context.getPackageName();
+        } catch (Exception ignored) {
+            // do nothing
+        }
+
+        try {
+            // go through all the potential packages in the JSONArray and find the first one,
+            // with the condition that it's not the same as the current package
             for (String packageName : potentialPackages) {
-                if (isPackageOnDevice(packageName)) {
+                if (isPackageOnDevice(packageName) && !packageName.equals(selfPackageName)) {
                     return packageName;
                 }
             }
