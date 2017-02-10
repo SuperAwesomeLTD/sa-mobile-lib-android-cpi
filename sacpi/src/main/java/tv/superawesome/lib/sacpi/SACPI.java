@@ -79,7 +79,7 @@ public class SACPI extends BroadcastReceiver {
      * @param listener  return callback listener
      */
     public void sendInstallEvent (final Context context, final SASession session, final SACPIInterface listener) {
-        sendInstallEvent(context, session, session.getAppName(), listener);
+        sendInstallEvent(context, session, session.getPackageName(), listener);
     }
 
     /**

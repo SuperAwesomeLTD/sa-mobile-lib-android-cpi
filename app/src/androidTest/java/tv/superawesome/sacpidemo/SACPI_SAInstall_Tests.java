@@ -165,16 +165,16 @@ public class SACPI_SAInstall_Tests extends ApplicationTestCase<Application> {
         SAInstall install = new SAInstall(getContext());
         assertNotNull(install);
 
-        JSONObject query = install.getInstallHeader();
-        assertNotNull(query);
+        JSONObject header = install.getInstallHeader();
+        assertNotNull(header);
 
         String expected1 = "application/json";
         String expected2 = SAUtils.getUserAgent(getContext());
 
-        assertTrue(query.has("Content-Type"));
-        assertTrue(query.has("User-Agent"));
-        assertEquals(expected1, query.opt("Content-Type"));
-        assertEquals(expected2, query.opt("User-Agent"));
+        assertTrue(header.has("Content-Type"));
+        assertTrue(header.has("User-Agent"));
+        assertEquals(expected1, header.opt("Content-Type"));
+        assertEquals(expected2, header.opt("User-Agent"));
 
     }
 
