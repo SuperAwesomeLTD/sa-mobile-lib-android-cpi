@@ -7,9 +7,6 @@ package tv.superawesome.lib.sacpi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.util.Log;
-
-import org.json.JSONObject;
 
 import java.util.List;
 
@@ -18,16 +15,13 @@ import tv.superawesome.lib.sacpi.install.SAOnce;
 import tv.superawesome.lib.sacpi.pack.SACheck;
 import tv.superawesome.lib.sacpi.pack.SAPackage;
 import tv.superawesome.lib.sacpi.referral.SAReferral;
-import tv.superawesome.lib.samodelspace.SAReferralData;
-import tv.superawesome.lib.sanetwork.request.SANetwork;
-import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SASession;
 
 /**
  * Class that extends BroadcastReceiver in order to:
  * - if an app is installed via Google Play Store and there *is* referral data, then it can act
  * on it using the SAReferralEvent class
- * - otherwise, define a method called sendInstallEvent that just sends an /install event to the
+ * - otherwise, define a method called handleInstall that just sends an /install event to the
  * ad server and returns a callback indicating success or failure
  */
 public class SACPI extends BroadcastReceiver {
@@ -62,10 +56,10 @@ public class SACPI extends BroadcastReceiver {
      * @param context   current context (fragment or activity)
      * @param listener  return callback listener
      */
-    public void sendInstallEvent (final Context context, final SACPIInterface listener) {
+    public void handleInstall(final Context context, final SACPIInterface listener) {
         SASession session = new SASession(context);
         session.setConfigurationProduction();
-        sendInstallEvent(context, session, listener);
+        handleInstall(context, session, listener);
     }
 
     /**
@@ -78,8 +72,8 @@ public class SACPI extends BroadcastReceiver {
      * @param session   current session to be based on
      * @param listener  return callback listener
      */
-    public void sendInstallEvent (final Context context, final SASession session, final SACPIInterface listener) {
-        sendInstallEvent(context, session, session.getPackageName(), listener);
+    public void handleInstall(final Context context, final SASession session, final SACPIInterface listener) {
+        handleInstall(context, session, session.getPackageName(), listener);
     }
 
     /**
@@ -93,7 +87,7 @@ public class SACPI extends BroadcastReceiver {
      * @param target    the target you want to check & send an install for
      * @param listener  return callback listener
      */
-    public void sendInstallEvent (final Context context, final SASession session, final String target, final SACPIInterface listener) {
+    public void handleInstall(final Context context, final SASession session, final String target, final SACPIInterface listener) {
 
         final SACPIInterface _listener = listener != null ? listener : new SACPIInterface() {
             @Override public void saDidCountAnInstall(boolean success) {}};

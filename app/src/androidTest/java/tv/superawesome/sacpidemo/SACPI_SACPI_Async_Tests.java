@@ -3,7 +3,6 @@ package tv.superawesome.sacpidemo;
 import android.test.ActivityInstrumentationTestCase2;
 import android.test.UiThreadTest;
 import android.test.suitebuilder.annotation.LargeTest;
-import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -55,7 +54,7 @@ public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<Ma
         // call the whole CPI process:
         // - as if I was running this from the app that's just been installed "tv.superawesome.demoapp",
         // - see if the main CPI method executes correctly against a new click
-        SACPI.getInstance().sendInstallEvent(getActivity(), session, "tv.superawesome.demoapp", new SACPIInterface() {
+        SACPI.getInstance().handleInstall(getActivity(), session, "tv.superawesome.demoapp", new SACPIInterface() {
             @Override
             public void saDidCountAnInstall(boolean success) {
                 assertTrue(success);
@@ -100,7 +99,7 @@ public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<Ma
         //   "tv.superawesome.demoapp"
         // - see if the main CPI method executes correctly, and for this other app doesn't
         //   return "true", but "false"
-        SACPI.getInstance().sendInstallEvent(getActivity(), session, "some.other.app", new SACPIInterface() {
+        SACPI.getInstance().handleInstall(getActivity(), session, "some.other.app", new SACPIInterface() {
             @Override
             public void saDidCountAnInstall(boolean success) {
                 assertFalse(success);
