@@ -38,7 +38,7 @@ public class SACPI extends BroadcastReceiver {
     /**
      * Private constructor that is only called once
      */
-    private SACPI () {
+    public SACPI () {
         // do nothing
     }
 
