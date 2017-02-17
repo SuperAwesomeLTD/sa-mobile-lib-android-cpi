@@ -7,7 +7,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import org.json.JSONObject;
 
-import tv.superawesome.lib.sacpi.referral.SAReferral;
+import tv.superawesome.lib.sacpi.referral.SAReceiver;
 import tv.superawesome.lib.sajsonparser.SAJsonParser;
 import tv.superawesome.lib.sanetwork.request.SANetwork;
 import tv.superawesome.lib.sasession.SASession;
@@ -53,8 +53,8 @@ public class SACPI_SARefferal_Async_Tests extends ActivityInstrumentationTestCas
         Intent intent = new Intent();
         intent.putExtra("referrer", "utm_source=1&utm_campaign=1218&utm_term=1063&utm_content=5778&utm_medium=588");
 
-        SAReferral referral = new SAReferral(getActivity());
-        referral.sendReferralEvent(intent, new SAReferral.SAReferralInterface() {
+        SAReceiver referral = new SAReceiver(getActivity());
+        referral.sendReferralEvent(intent, new SAReceiver.SAReceiverInterface() {
             @Override
             public void saDidSendReferralData(boolean success) {
                 assertTrue(success);

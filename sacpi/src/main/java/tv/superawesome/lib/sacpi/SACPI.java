@@ -14,7 +14,7 @@ import tv.superawesome.lib.sacpi.install.SAInstall;
 import tv.superawesome.lib.sacpi.install.SAOnce;
 import tv.superawesome.lib.sacpi.pack.SACheck;
 import tv.superawesome.lib.sacpi.pack.SAPackage;
-import tv.superawesome.lib.sacpi.referral.SAReferral;
+import tv.superawesome.lib.sacpi.referral.SAReceiver;
 import tv.superawesome.lib.sasession.SASession;
 
 /**
@@ -140,7 +140,7 @@ public class SACPI extends BroadcastReceiver {
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        SAReferral referral = new SAReferral(context);
+        SAReceiver referral = new SAReceiver(context);
         referral.sendReferralEvent(intent, null);
     }
 }

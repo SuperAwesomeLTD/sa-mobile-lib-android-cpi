@@ -10,18 +10,18 @@ import android.content.Intent;
 import org.json.JSONObject;
 
 import tv.superawesome.lib.sajsonparser.SAJsonParser;
-import tv.superawesome.lib.samodelspace.SAReferralData;
 import tv.superawesome.lib.sanetwork.request.SANetwork;
 import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SAConfiguration;
 import tv.superawesome.lib.sasession.SASession;
 import tv.superawesome.lib.sautils.SAUtils;
+import tv.superawesome.lib.samodelspace.SAReferral;
 
 /**
  * Class that contains methods to handle when the app receives referral data from the google
  * play store.
  */
-public class SAReferral {
+public class SAReceiver {
 
     // current context
     private Context     context;
@@ -32,7 +32,7 @@ public class SAReferral {
      *
      * @param context current context (activity or fragment)
      */
-    public SAReferral (Context context) {
+    public SAReceiver (Context context) {
         // get the context reference
         this.context = context;
 
@@ -48,7 +48,7 @@ public class SAReferral {
      * @param intent current intent
      * @return       valid referral data
      */
-    public SAReferralData parseReferralResponse (Intent intent) {
+    public SAReferral parseReferralResponse (Intent intent) {
 
         String referralString = null;
 
@@ -70,7 +70,7 @@ public class SAReferral {
      * @param data  the string data, something like utm_source=33&utm_campaign=3121 ...
      * @return      a new instance of SAReferralData
      */
-    public SAReferralData parseReferralResponse (String data) {
+    public SAReferral parseReferralResponse (String data) {
 
         String referrer;
 
@@ -87,7 +87,7 @@ public class SAReferral {
         referrer = referrer.replace("utm_content", "\"utm_content\"");
         referrer = referrer.replace("utm_medium", "\"utm_medium\"");
 
-        return new SAReferralData(referrer);
+        return new SAReferral (referrer);
 
     }
 
@@ -98,7 +98,7 @@ public class SAReferral {
      * @return      a new JSONObject that contains that will be used by the ad server to
      *              record the event
      */
-    public JSONObject getReferralCustomData (SAReferralData data) {
+    public JSONObject getReferralCustomData (SAReferral data) {
 
         try {
             return SAJsonParser.newObject(new Object[]{
@@ -124,7 +124,7 @@ public class SAReferral {
      * @param data  an instance of SAReferralData
      * @return      a new configured session instance
      */
-    public SASession getReferralInstallSession (SAReferralData data) {
+    public SASession getReferralInstallSession (SAReferral data) {
         SASession session = new SASession(context);
         try {
             SAConfiguration configuration = SAConfiguration.fromValue(data.configuration);
@@ -141,7 +141,7 @@ public class SAReferral {
      * @param data  an instance of SAReferralData
      * @return      a new URL string to send the event to
      */
-    public String getReferralUrl (SAReferralData data) {
+    public String getReferralUrl (SAReferral data) {
 
         SASession session = getReferralInstallSession(data);
         JSONObject refEventDict = getReferralCustomData(data);
@@ -168,10 +168,10 @@ public class SAReferral {
      * @param intent    Android Broadcast Service intent containing a "referrer" string
      * @param listener  Listener for a callback
      */
-    public void sendReferralEvent (Intent intent, final SAReferralInterface listener) {
+    public void sendReferralEvent (Intent intent, final SAReceiverInterface listener) {
 
         // get the referral data from the intent
-        SAReferralData referralData = parseReferralResponse(intent);
+        SAReferral referralData = parseReferralResponse(intent);
 
         // if it's valid
         if (referralData.isValid()) {
@@ -202,9 +202,9 @@ public class SAReferral {
     }
 
     /**
-     * Interface for the referral system
+     * Interface for the receiver system
      */
-    public interface SAReferralInterface {
+    public interface SAReceiverInterface {
 
         /**
          * Method to implement

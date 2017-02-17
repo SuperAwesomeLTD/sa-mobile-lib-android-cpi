@@ -4,12 +4,11 @@ import android.app.Application;
 import android.content.Intent;
 import android.test.ApplicationTestCase;
 import android.test.suitebuilder.annotation.SmallTest;
-import android.util.Log;
 
 import org.json.JSONObject;
 
-import tv.superawesome.lib.sacpi.referral.SAReferral;
-import tv.superawesome.lib.samodelspace.SAReferralData;
+import tv.superawesome.lib.sacpi.referral.SAReceiver;
+import tv.superawesome.lib.samodelspace.SAReferral;
 import tv.superawesome.lib.sasession.SAConfiguration;
 import tv.superawesome.lib.sasession.SASession;
 
@@ -22,7 +21,7 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_Create1 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
     }
@@ -30,11 +29,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_1 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         String source = "utm_source=1&utm_campaign=231&utm_term=2091&utm_content=21&utm_medium=8921";
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferral result = referral.parseReferralResponse(source);
 
         assertNotNull(result);
         assertEquals(1, result.configuration);
@@ -49,11 +48,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_2 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         String source = "utm_source%3D1%26utm_campaign%3D231%26utm_term%3D2091%26utm_content%3D21%26utm_medium%3D8921";
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferral result = referral.parseReferralResponse(source);
 
         assertNotNull(result);
         assertEquals(1, result.configuration);
@@ -68,11 +67,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_3 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         String source = "utm_campaign=231&utm_content=21&utm_medium=8921";
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferral result = referral.parseReferralResponse(source);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
@@ -87,11 +86,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_4 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         String source = "utm_sotm_c*8saasasaassaaa/\\ampaign\"%3D231%26utm_term%3D2091%26utm_medium%3D8921";
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferral result = referral.parseReferralResponse(source);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
@@ -106,10 +105,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_5 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData result = referral.parseReferralResponse((String)null);
+        SAReferral result = referral.parseReferralResponse((String)null);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
@@ -124,13 +123,13 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_6 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         Intent intent = new Intent();
         intent.putExtra("referrer", "utm_source=1&utm_campaign=231&utm_term=2091&utm_content=21&utm_medium=8921");
 
-        SAReferralData result = referral.parseReferralResponse(intent);
+        SAReferral result = referral.parseReferralResponse(intent);
 
         assertNotNull(result);
         assertEquals(1, result.configuration);
@@ -145,11 +144,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_7 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         Intent intent = new Intent();
-        SAReferralData result = referral.parseReferralResponse(intent);
+        SAReferral result = referral.parseReferralResponse(intent);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
@@ -164,10 +163,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse1_8 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData result = referral.parseReferralResponse((Intent)null);
+        SAReferral result = referral.parseReferralResponse((Intent)null);
 
         assertNotNull(result);
         assertEquals(-1, result.configuration);
@@ -182,10 +181,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralCustomData1_1 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
@@ -211,7 +210,7 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralCustomData1_2 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         JSONObject result = referral.getReferralCustomData(null);
@@ -224,10 +223,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralInstallSession1_1 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
@@ -244,10 +243,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralInstallSession1_2 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 0,      // config
                 231,    // campaign
                 2091,   // line item
@@ -264,10 +263,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralInstallSession1_3 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 4,      // wrong config - 4 is not value so it should be STAGING
                 231,    // campaign
                 2091,   // line item
@@ -284,10 +283,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralUrl1_1 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
@@ -310,7 +309,7 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralUrl1_2 () {
 
-        SAReferral referral = new SAReferral(getContext());
+        SAReceiver referral = new SAReceiver(getContext());
         assertNotNull(referral);
 
         String result = referral.getReferralUrl(null);
@@ -329,7 +328,7 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_Create2 () {
 
-        SAReferral referral = new SAReferral(null);
+        SAReceiver referral = new SAReceiver(null);
         assertNotNull(referral);
 
     }
@@ -337,11 +336,11 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_parseReferralResponse2_1 () {
 
-        SAReferral referral = new SAReferral(null);
+        SAReceiver referral = new SAReceiver(null);
         assertNotNull(referral);
 
         String source = "utm_source=1&utm_campaign=231&utm_term=2091&utm_content=21&utm_medium=8921";
-        SAReferralData result = referral.parseReferralResponse(source);
+        SAReferral result = referral.parseReferralResponse(source);
 
         assertNotNull(result);
         assertEquals(1, result.configuration);
@@ -356,10 +355,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralCustomData2_1 () {
 
-        SAReferral referral = new SAReferral(null);
+        SAReceiver referral = new SAReceiver(null);
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
@@ -385,10 +384,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralInstallSession2_1 () {
 
-        SAReferral referral = new SAReferral(null);
+        SAReceiver referral = new SAReceiver(null);
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
@@ -405,10 +404,10 @@ public class SACPI_SAReferral_Tests extends ApplicationTestCase<Application> {
     @SmallTest
     public void testSAReferral_getReferralUrl2_1 () {
 
-        SAReferral referral = new SAReferral(null);
+        SAReceiver referral = new SAReceiver(null);
         assertNotNull(referral);
 
-        SAReferralData referralData = new SAReferralData(
+        SAReferral referralData = new SAReferral(
                 1,      // config
                 231,    // campaign
                 2091,   // line item
