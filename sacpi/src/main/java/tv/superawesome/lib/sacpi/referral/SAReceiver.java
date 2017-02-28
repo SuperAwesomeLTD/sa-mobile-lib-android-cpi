@@ -15,7 +15,7 @@ import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SAConfiguration;
 import tv.superawesome.lib.sasession.SASession;
 import tv.superawesome.lib.sautils.SAUtils;
-import tv.superawesome.lib.samodelspace.SAReferral;
+import tv.superawesome.lib.samodelspace.saad.SAReferral;
 
 /**
  * Class that contains methods to handle when the app receives referral data from the google

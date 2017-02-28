@@ -8,7 +8,7 @@ import android.test.suitebuilder.annotation.SmallTest;
 import org.json.JSONObject;
 
 import tv.superawesome.lib.sacpi.referral.SAReceiver;
-import tv.superawesome.lib.samodelspace.SAReferral;
+import tv.superawesome.lib.samodelspace.saad.SAReferral;
 import tv.superawesome.lib.sasession.SAConfiguration;
 import tv.superawesome.lib.sasession.SASession;
 

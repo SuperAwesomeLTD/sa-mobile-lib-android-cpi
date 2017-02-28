@@ -9,6 +9,7 @@ import org.json.JSONObject;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.concurrent.CountDownLatch;
 
 import tv.superawesome.lib.sacpi.pack.SACheck;
 import tv.superawesome.lib.sajsonparser.SAJsonParser;
@@ -19,15 +20,14 @@ import tv.superawesome.lib.sautils.SAUtils;
 
 public class SACPI_SACheck_Async_Tests extends ActivityInstrumentationTestCase2<MainActivity> {
 
-    private static final int TIMEOUT = 2500;
-
     public SACPI_SACheck_Async_Tests() {
         super("tv.superawesome.sacpidemo", MainActivity.class);
     }
 
-    @UiThreadTest
     @LargeTest
-    public void testSACheck_askServerForPackagesThatGeneratedThisInstall () {
+    public void testSACheck_askServerForPackagesThatGeneratedThisInstall () throws Throwable {
+
+        final CountDownLatch signal = new CountDownLatch(2);
 
         // create a new check object
         final SACheck check = new SACheck(getActivity());
@@ -40,8 +40,8 @@ public class SACPI_SACheck_Async_Tests extends ActivityInstrumentationTestCase2<
         // first generate a new click on the ad server coming from this app,
         // "tv.superawesome.sacpidemo" as if to install the "tv.superawesome.demoapp", which is
         // the target that was setup in the dashboard
-        String clickUrl = session.getBaseUrl() + "/click";
-        JSONObject clickQuery = SAJsonParser.newObject(new Object[]{
+        final String clickUrl = session.getBaseUrl() + "/click";
+        final JSONObject clickQuery = SAJsonParser.newObject(new Object[]{
                 "placement", 588,
                 "sourceBundle", session.getPackageName(),
                 "creative", 5778,
@@ -51,9 +51,20 @@ public class SACPI_SACheck_Async_Tests extends ActivityInstrumentationTestCase2<
                 "rnd", session.getCachebuster()
         });
 
-        SANetwork network = new SANetwork();
-        network.sendGET(getActivity(), clickUrl, clickQuery, new JSONObject(), null);
-        sleep();
+        final SANetwork network = new SANetwork();
+
+        runTestOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                network.sendGET(getActivity(), clickUrl, clickQuery, new JSONObject(), new SANetworkInterface() {
+                    @Override
+                    public void saDidGetResponse(int i, String s, boolean b) {
+                        assertTrue(b);
+                        signal.countDown();
+                    }
+                });
+            }
+        });
 
         // after the click has been executed, check to see that for "tv.superawesome.demoapp"
         // the ad server will return an array of one possible app, this one,
@@ -62,29 +73,31 @@ public class SACPI_SACheck_Async_Tests extends ActivityInstrumentationTestCase2<
 //        final List<String> expectedPackages = Collections.singletonList("tv.superawesome.sacpidemo");
 //        final String expectedPackage = "tv.superawesome.sacpidemo";
 
-        check.askServerForPackagesThatGeneratedThisInstall(targetPackage, session, new SACheck.SACheckInstallInterface() {
+        runTestOnUiThread(new Runnable() {
             @Override
-            public void saDidGetListOfPackagesToCheck(List<String> packages) {
+            public void run() {
 
-                // test assumptions
-                assertNotNull(packages);
-                assertFalse(packages.isEmpty());
-                assertTrue(packages.size() > 0);
+                check.askServerForPackagesThatGeneratedThisInstall(targetPackage, session, new SACheck.SACheckInstallInterface() {
+                    @Override
+                    public void saDidGetListOfPackagesToCheck(List<String> packages) {
+
+                        // test assumptions
+                        assertNotNull(packages);
+                        assertFalse(packages.isEmpty());
+                        assertTrue(packages.size() > 0);
+
+                        signal.countDown();
 
 //                String firstPackage = packages.get(0);
 //                assertNotNull(firstPackage);
 //                assertEquals(expectedPackage, firstPackage);
 
+                    }
+                });
             }
         });
-        sleep();
-    }
 
-    private void sleep() {
-        try {
-            Thread.sleep(TIMEOUT);
-        } catch (InterruptedException e) {
-            fail("Unexpected Timeout");
-        }
+        signal.await();
+
     }
 }
