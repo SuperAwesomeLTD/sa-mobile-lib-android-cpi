@@ -15,6 +15,7 @@ import tv.superawesome.lib.sajsonparser.SAJsonParser;
 import tv.superawesome.lib.sanetwork.request.SANetwork;
 import tv.superawesome.lib.sanetwork.request.SANetworkInterface;
 import tv.superawesome.lib.sasession.SASession;
+import tv.superawesome.lib.sautils.SAUtils;
 
 public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<MainActivity> {
 
@@ -41,12 +42,15 @@ public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<Ma
         final String clickUrl = session.getBaseUrl() + "/click";
         final JSONObject clickQuery = SAJsonParser.newObject(new Object[]{
                 "placement", 588,
-                "sourceBundle", session.getPackageName(),
+                "bundle", session.getPackageName(),
                 "creative", 5778,
                 "line_item", 1063,
                 "ct", session.getConnectionType(),
                 "sdkVersion", "0.0.0",
                 "rnd", session.getCachebuster()
+        });
+        final JSONObject clickHeader = SAJsonParser.newObject(new Object[] {
+                "User-Agent", SAUtils.getUserAgent(getActivity())
         });
 
         final SANetwork network = new SANetwork();
@@ -54,7 +58,7 @@ public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<Ma
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
-                network.sendGET(getActivity(), clickUrl, clickQuery, new JSONObject(), new SANetworkInterface() {
+                network.sendGET(getActivity(), clickUrl, clickQuery, clickHeader, new SANetworkInterface() {
                     @Override
                     public void saDidGetResponse(int i, String s, boolean b) {
                         assertTrue(b);
@@ -112,13 +116,16 @@ public class SACPI_SACPI_Async_Tests extends ActivityInstrumentationTestCase2<Ma
                 "sdkVersion", "0.0.0",
                 "rnd", session.getCachebuster()
         });
+        final JSONObject clickHeader = SAJsonParser.newObject(new Object[] {
+                "User-Agent", SAUtils.getUserAgent(getActivity())
+        });
 
         final SANetwork network = new SANetwork();
 
         runTestOnUiThread(new Runnable() {
             @Override
             public void run() {
-                network.sendGET(getActivity(), clickUrl, clickQuery, new JSONObject(), new SANetworkInterface() {
+                network.sendGET(getActivity(), clickUrl, clickQuery, clickHeader, new SANetworkInterface() {
                     @Override
                     public void saDidGetResponse(int i, String s, boolean b) {
                         assertTrue(b);
