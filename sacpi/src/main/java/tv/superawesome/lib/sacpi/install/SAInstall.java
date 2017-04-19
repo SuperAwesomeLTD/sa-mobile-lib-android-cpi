@@ -77,10 +77,9 @@ public class SAInstall {
      *                            }
      */
     public JSONObject getInstallQuery (String targetPackageName, String sourcePackageName) {
-        return SAJsonParser.newObject(new Object[] {
+        return SAJsonParser.newObject(
                 "bundle", targetPackageName,
-                "sourceBundle", sourcePackageName
-        });
+                "sourceBundle", sourcePackageName);
     }
 
     /**
@@ -93,10 +92,9 @@ public class SAInstall {
      *          }
      */
     public JSONObject getInstallHeader () {
-        return SAJsonParser.newObject(new Object[]{
+        return SAJsonParser.newObject(
                 "Content-Type", "application/json",
-                "User-Agent", SAUtils.getUserAgent(context)
-        });
+                "User-Agent", SAUtils.getUserAgent(context));
     }
 
     /**

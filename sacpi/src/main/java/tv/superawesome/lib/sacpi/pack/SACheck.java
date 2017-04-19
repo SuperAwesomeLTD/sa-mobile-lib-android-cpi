@@ -72,9 +72,7 @@ public class SACheck {
      *                    }
      */
     public JSONObject getCheckInstallQuery (String packageName) {
-        return SAJsonParser.newObject(new Object[] {
-                "bundle", packageName
-        });
+        return SAJsonParser.newObject("bundle", packageName);
     }
 
     /**

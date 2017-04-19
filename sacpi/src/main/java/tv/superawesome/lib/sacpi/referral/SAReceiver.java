@@ -101,17 +101,15 @@ public class SAReceiver {
     public JSONObject getReferralCustomData (SAReferral data) {
 
         try {
-            return SAJsonParser.newObject(new Object[]{
+            return SAJsonParser.newObject(
                     // "sdkVersion", SuperAwesome.getInstance().getSDKVersion(),
                     "rnd", SAUtils.getCacheBuster(),
                     "ct", SAUtils.getNetworkConnectivity(context).ordinal(),
-                    "data", SAUtils.encodeDictAsJsonDict(SAJsonParser.newObject(new Object[]{
-                    "placement", data.placementId,
-                    "line_item", data.lineItemId,
-                    "creative", data.creativeId,
-                    "type", "custom.referred_install"
-            }))
-            });
+                    "data", SAUtils.encodeDictAsJsonDict(SAJsonParser.newObject(
+                            "placement", data.placementId,
+                            "line_item", data.lineItemId,
+                            "creative", data.creativeId,
+                            "type", "custom.referred_install")));
         } catch (Exception e) {
             return new JSONObject();
         }
@@ -155,10 +153,9 @@ public class SAReceiver {
      * @return  a standard GET request header as a JSONObject
      */
     public JSONObject getReferralHeader () {
-        return SAJsonParser.newObject(new Object[]{
+        return SAJsonParser.newObject(
                 "Content-Type", "application/json",
-                "User-Agent", SAUtils.getUserAgent(context)
-        });
+                "User-Agent", SAUtils.getUserAgent(context));
     }
 
     /**
