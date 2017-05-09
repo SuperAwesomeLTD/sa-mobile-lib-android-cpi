@@ -34,15 +34,14 @@ public class SACPI_SARefferal_Async_Tests extends ActivityInstrumentationTestCas
         // "tv.superawesome.sacpidemo" as if to install the "tv.superawesome.demoapp", which is
         // the target that was setup in the dashboard
         final String clickUrl = session.getBaseUrl() + "/click";
-        final JSONObject clickQuery = SAJsonParser.newObject(new Object[]{
+        final JSONObject clickQuery = SAJsonParser.newObject(
                 "placement", 588,
-                "sourceBundle", session.getPackageName(),
+                "bundle", session.getPackageName(),
                 "creative", 5778,
                 "line_item", 1063,
                 "ct", session.getConnectionType(),
                 "sdkVersion", "0.0.0",
-                "rnd", session.getCachebuster()
-        });
+                "rnd", session.getCachebuster());
 
         final SANetwork network = new SANetwork();
 

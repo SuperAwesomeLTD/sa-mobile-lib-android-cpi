@@ -7,6 +7,7 @@ package tv.superawesome.lib.sacpi;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.util.Log;
 
 import java.util.List;
 
@@ -114,6 +115,7 @@ public class SACPI extends BroadcastReceiver {
                     // find out if at least one of the apps the server sent is to be found
                     // on the user's device
                     String source = pack.findFirstPackageOnDeviceFrom(packages);
+                    Log.d("SuperAwesome", "Source is " + source);
 
                     // and whatever the outcome, send an install event to the server
                     // and await for a response
